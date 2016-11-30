@@ -1,6 +1,9 @@
 plugins {
     id 'nebula.release' version '4.1.0'
 }
+nebulaRelease { 
+    addReleaseBranchPattern(/release\/\d+(\.\d+)+/)
+}
 
 project(":modules:Base") {
     apply plugin: "module"
