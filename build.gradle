@@ -30,6 +30,8 @@ dependencies {
     serviceArchives project(path: ":services:Zookeeper", configuration: "archives")
 }
 
+task test {}
+
 task packageModules(type: Copy) {
     into "${buildDir}/modules"
     from {
