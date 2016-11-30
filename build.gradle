@@ -1,5 +1,18 @@
-allprojects {
-    apply plugin: "base"
+plugins {
+    id 'nebula.release' version '4.1.0'
+}
+
+project(":modules:Base") {
+    apply plugin: "module"
+}
+project(":modules:Extras") {
+    apply plugin: "module"
+}
+project(":services:Nifi") {
+    apply plugin: "service"
+}
+project(":services:Zookeeper") {
+    apply plugin: "service"
 }
 
 configurations {
@@ -14,75 +27,27 @@ dependencies {
     serviceArchives project(path: ":services:Zookeeper", configuration: "archives")
 }
 
-project(":modules") {
-    subprojects {
-        artifacts {
-            archives buildDir
-        }
-
-        ext {
-            moduleDir = new File(buildDir, "${project.name}Module")
-        }
-
-        buildArchives {
-            doFirst {
-                copy {
-                    from ('.')
-                    include 'config/**/*'
-                    include 'share/**/*'
-                    into moduleDir
-                }
-            }
-        }
-    }
-}
-
-project(":services") {
-    subprojects {
-        artifacts {
-            archives buildDir
-        }
-
-        ext {
-            serviceDir = new File(buildDir, "${project.name}Service")
-        }
-
-        buildArchives {
-            doFirst {
-                copy {
-                    from ('.')
-                    include 'bin/**/*'
-                    include 'conf/**/*'
-                    into serviceDir
-                }
-            }
-        }
-    }
-}
-
-task prepareModules(type: Copy) {
+task packageModules(type: Copy) {
     into "${buildDir}/modules"
-
-    configurations.moduleArchives.getAllDependencies().each { dependency ->
-        dependency.getProjectConfiguration().getArtifacts().each { artifact ->
-            println artifact
-            from(artifact.getFile())
-        }
+    from {
+        configurations.moduleArchives
     }
 }
 
-task prepareServices(type: Copy) {
+task packageServices(type: Copy) {
     into "${buildDir}/services"
-
-    configurations.serviceArchives.getAllDependencies().each { dependency ->
-        dependency.getProjectConfiguration().getArtifacts().each { artifact ->
-            println artifact
-            from(artifact.getFile())
-        }
+    from {
+        configurations.serviceArchives
     }
 }
 
-task prepare(dependsOn: [prepareModules, prepareServices])
+task "package" {
+    dependsOn packageModules, packageServices
+}
+
+task clean(type: Delete) {
+    delete buildDir
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.2.1'
