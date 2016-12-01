@@ -1,12 +1,15 @@
 node {
    stage('Preparation') {
       checkout scm 
-      sh 'env | sort'
    }
    stage('Build') {
-      sh "./gradlew clean package"
+      if (env.BRANCH_NAME == 'master') {
+         sh "./gradlew clean package final"
+      } else {
+         sh "./gradlew clean package"
+      }
    }
    stage('Results') {
-      archive 'build/*.tar.gz'
+      archiveArtifacts artifacts: 'build/*.tar.gz', fingerprint: true
    }
 }
