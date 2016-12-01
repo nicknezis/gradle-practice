@@ -1,7 +1,7 @@
 node {
    stage('Preparation') {
       checkout scm 
-      echo "Building branch: ${env.BRANCH_NAME}"
+      sh 'env | sort'
    }
    stage('Build') {
       sh "./gradlew clean package"
