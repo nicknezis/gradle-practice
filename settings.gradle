@@ -1,3 +1,5 @@
+rootProject.name = "gradle-practice"
+
 include 'modules:Base'
 include 'modules:Extras'
 include 'services:Nifi'
