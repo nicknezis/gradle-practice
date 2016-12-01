@@ -1,5 +1,10 @@
 plugins {
     id 'nebula.release' version '4.1.0'
+    id 'maven'
+}
+nebulaRelease { 
+    // need this for gitflow release names
+    addReleaseBranchPattern(/release\/\d+(\.\d+)+/)
 }
 
 project(":modules:Base") {
@@ -27,26 +32,32 @@ dependencies {
     serviceArchives project(path: ":services:Zookeeper", configuration: "archives")
 }
 
-task packageModules(type: Copy) {
-    into "${buildDir}/modules"
-    from {
-        configurations.moduleArchives
+task test {}
+
+task "package" (type: Tar) {
+    dependsOn configurations.serviceArchives, configurations.moduleArchives
+
+    baseName project.name
+    version project.version.toString()
+    destinationDir project.buildDir
+    compression Compression.GZIP
+    extension "tar.gz"
+
+    into("${baseName}-${version}/services") {
+        from {
+            configurations.serviceArchives.collect { tarTree(it) }
+        }
+    }
+
+    into("${baseName}-${version}/modules") {
+        from {
+            configurations.moduleArchives.collect { tarTree(it) }
+        }
     }
 }
 
-task packageServices(type: Copy) {
-    into "${buildDir}/services"
-    from {
-        configurations.serviceArchives
-    }
-}
-
-task "package" {
-    dependsOn packageModules, packageServices
-}
-
-task clean(type: Delete) {
-    delete buildDir
+artifacts {
+    archives(package)
 }
 
 task wrapper(type: Wrapper) {
