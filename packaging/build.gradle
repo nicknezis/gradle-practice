@@ -1,3 +1,6 @@
+apply plugin: "nebula.os-package"
+apply plugin: "maven"
+
 configurations {
     moduleArchives
     serviceArchives
