@@ -3,26 +3,10 @@ plugins {
     id 'nebula.os-package' version '2.2.6' apply false
     id 'maven'
 }
+
 nebulaRelease { 
     // need this for gitflow release names
     addReleaseBranchPattern(/release\/\d+(\.\d+)+/)
-}
-
-project(":modules:Base") {
-    apply plugin: "module"
-}
-project(":modules:Extras") {
-    apply plugin: "module"
-}
-project(":services:Nifi") {
-    apply plugin: "service"
-}
-project(":services:Zookeeper") {
-    apply plugin: "service"
-}
-project(":packaging") {
-    apply plugin: "nebula.os-package"
-    apply plugin: "maven"
 }
 
 task wrapper(type: Wrapper) {
