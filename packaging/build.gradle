@@ -1,0 +1,38 @@
+configurations {
+    moduleArchives
+    serviceArchives
+}
+
+dependencies {
+    moduleArchives project(path: ":modules:Base", configuration: "archives")
+    moduleArchives project(path: ":modules:Extras", configuration: "archives")
+    serviceArchives project(path: ":services:Nifi", configuration: "archives")
+    serviceArchives project(path: ":services:Zookeeper", configuration: "archives")
+}
+
+buildRpm {
+    dependsOn configurations.serviceArchives, configurations.moduleArchives
+
+    packageName rootProject.name
+    version project.version.toString().replaceAll("-", "_")
+    release "1"
+
+    into("/c2") {
+        from {
+            configurations.serviceArchives.collect { tarTree(it) }
+        }
+        addParentDirs false
+    }
+
+    into("/c2/install.d") {
+        from {
+            configurations.moduleArchives.collect { tarTree(it) }
+        }
+        addParentDirs false
+        createDirectoryEntry true
+    }
+}
+
+artifacts {
+    archives buildRpm
+}

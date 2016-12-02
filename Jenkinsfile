@@ -12,6 +12,6 @@ node {
       }
    }
    stage('Results') {
-      archiveArtifacts artifacts: 'build/distributions/*.rpm', fingerprint: true
+      archiveArtifacts artifacts: 'packaging/build/distributions/*.rpm', fingerprint: true
    }
 }
