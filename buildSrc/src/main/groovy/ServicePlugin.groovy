@@ -18,7 +18,7 @@ class ServicePlugin implements Plugin<Project> {
                 extension "tar.gz"
 
                 from ('.')
-                into baseName
+                into ""
 
                 include 'conf/**/*'
                 include 'lib/**/*'

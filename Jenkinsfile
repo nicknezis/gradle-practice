@@ -4,14 +4,14 @@ node {
    }
    stage('Build') {
       if (env.BRANCH_NAME == 'master') {
-         sh "./gradlew -Prelease.useLastTag=true clean package final"
+         sh "./gradlew -Prelease.useLastTag=true clean buildRpm final"
       } else if (env.BRANCH_NAME =~ /release\/\d+(\.\d+)+/) {
-         sh "./gradlew clean package candidate"
+         sh "./gradlew clean buildRpm candidate"
       } else {
-         sh "./gradlew clean package"
+         sh "./gradlew clean buildRpm"
       }
    }
    stage('Results') {
-      archiveArtifacts artifacts: 'build/*.tar.gz', fingerprint: true
+      archiveArtifacts artifacts: 'build/distributions/*.rpm', fingerprint: true
    }
 }
