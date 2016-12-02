@@ -5,3 +5,5 @@ include 'modules:Extras'
 include 'services:Nifi'
 include 'services:Zookeeper'
 
+include 'packaging'
+
